@@ -137,7 +137,12 @@ if args.gmail_label:
 
 # State file to remember the last synced UID and UIDVALIDITY. You can override
 # this via the environment by setting STATE_FILE to a different path.
-STATE_FILE = os.environ.get("STATE_FILE", "/var/tmp/imap_sync_state.json")
+# If using multiple configs, make the state file unique per config
+STATE_FILE = os.environ.get("STATE_FILE", None)
+if STATE_FILE is None:
+    # Generate a unique state file name based on config file
+    config_base = os.path.splitext(os.path.basename(args.config))[0]
+    STATE_FILE = f"/var/tmp/imap_sync_state_{config_base}.json"
 
 # Optional: Only sync messages after this date. Set AFTER_DATE in format
 # YYYY-MM-DD (e.g., "2024-01-01") to filter messages. If not set, all messages
@@ -256,6 +261,10 @@ def main():
         # Search returns a list of UIDs matching the criteria
         uids = src.search(uid_search_criteria)
         uids = sorted(uids)
+        
+        # Filter out any UIDs we've already processed
+        # This ensures we don't re-sync the last message
+        uids = [uid for uid in uids if uid > last_uid]
 
         if not uids:
             # Nothing new to fetch; still update uidvalidity in case it changed
