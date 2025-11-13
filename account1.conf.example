@@ -1,0 +1,20 @@
+# Example config for Account 1
+# Copy to account1.conf and fill in your credentials
+
+# Source IMAP (server A)
+SRC_IMAP_HOST=imap.account1-server.com
+SRC_IMAP_USER=user@account1-server.com
+SRC_IMAP_PASS=your-source-password
+SRC_FOLDER=INBOX
+
+# Gmail IMAP
+GMAIL_IMAP_HOST=imap.gmail.com
+GMAIL_USER=account1@gmail.com
+GMAIL_APP_PASS=your-16-char-app-password
+GMAIL_FOLDER=Imported/Account1
+
+# State file - use different file per account to track progress separately
+STATE_FILE=/var/tmp/imap_sync_state_account1.json
+
+# Optional: Only sync messages after this date (format: YYYY-MM-DD)
+# AFTER_DATE=2024-01-01
